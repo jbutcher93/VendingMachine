@@ -16,7 +16,6 @@ public class VendingMachine {
     private List<Items> vendingMachineItems = new ArrayList<>();
     private BigDecimal balance = new BigDecimal(0);
     private BigDecimal addedValue;
-    private String line;
     private LocalDateTime now = LocalDateTime.now();
     private DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss a");
     private DateTimeFormatter salesReportFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_hh-mm-ss-a");
@@ -54,7 +53,7 @@ public class VendingMachine {
 
     public void resetBalance() {
         addToLog(UI.menu_state.FINISH_TRANSACTION_MENU);
-        returnChange(balance);
+        System.out.println(returnChange(balance));
         this.balance = ZERO;
     }
 
@@ -87,7 +86,6 @@ public class VendingMachine {
     */
     public void addToLog(UI.menu_state currentMenuState, Items item) {
         try {
-            String statusLogAction = "";
             FileOutputStream fos = new FileOutputStream(file, true);
             PrintWriter writer = new PrintWriter(fos);
             writer.println(formatDateTime + " "  + item.getName() + " " + item.getLocation() + " " + item.getPrice() + " " + getBalance());
@@ -98,30 +96,34 @@ public class VendingMachine {
     }
 
     public UI.menu_state updateInventory(String code) {
-        for (Items item : getVendingMachineItems()) {
-            if (code.equalsIgnoreCase(item.getLocation())) {
-                if(getBalance().subtract(item.getPrice()).compareTo(ZERO) < 0) {
-                    System.out.println();
-                    System.out.println("Add money before attempting to purchase");
-                    return UI.menu_state.PURCHASE_MENU;
-                }
-                else if(item.getQuantity() == 0) {
-                    System.out.println();
-                    System.out.println("This product is sold out");
-                    return UI.menu_state.PURCHASE_MENU;
-                } else {
-                    item.setQuantity(item.getQuantity() - 1);
-                    removeFromBalance(item.getPrice());
-                    addToLog(UI.menu_state.SELECT_PRODUCT_MENU, item);
-                    System.out.println();
-                    System.out.println("Here's your: " + item.getName());
-                    item.soundOutput();
-                    return UI.menu_state.PURCHASE_MENU;
+        try {
+            for (Items item : getVendingMachineItems()) {
+                if (code.equalsIgnoreCase(item.getLocation())) {
+                    if (getBalance().subtract(item.getPrice()).compareTo(ZERO) < 0) {
+                        System.out.println();
+                        System.out.println("Add money before attempting to purchase");
+                        return UI.menu_state.PURCHASE_MENU;
+                    } else if (item.getQuantity() == 0) {
+                        System.out.println();
+                        System.out.println("This product is sold out");
+                        return UI.menu_state.PURCHASE_MENU;
+                    } else {
+                        item.setQuantity(item.getQuantity() - 1);
+                        removeFromBalance(item.getPrice());
+                        addToLog(UI.menu_state.SELECT_PRODUCT_MENU, item);
+                        System.out.println();
+                        System.out.println("Here's your: " + item.getName());
+                        item.soundOutput();
+                        return UI.menu_state.PURCHASE_MENU;
+                    }
                 }
             }
+            System.out.println("The code you entered is incorrect");
+            return UI.menu_state.PURCHASE_MENU;
+        } catch (NullPointerException npe) {
+            System.out.println("Enter a code");
+            return UI.menu_state.PURCHASE_MENU;
         }
-        System.out.println("The code you entered is incorrect");
-        return UI.menu_state.PURCHASE_MENU;
     }
 
     public void writeSalesReport() {
@@ -147,10 +149,7 @@ public class VendingMachine {
         }
     }
 
-    /*
-    * Plugs into FINISH_TRANSACTION
-    */
-    public void returnChange(BigDecimal bd) {
+    public String returnChange(BigDecimal bd) {
         BigDecimal returnBalance = bd;
 
         final BigDecimal quarter = BigDecimal.valueOf(.25);
@@ -189,10 +188,8 @@ public class VendingMachine {
         pennyReturn = returnBalance.divideAndRemainder(penny);
         numberOfPenniesToReturn = pennyReturn[0];
     }
-        System.out.printf("Quarters: %.0f \n", numberOfQuartersToReturn);
-        System.out.printf("Dimes: %.0f \n", numberOfDimesToReturn);
-        System.out.printf("Nickels: %.0f \n", numberOfNickelsToReturn);
-        System.out.printf("Pennies: %.0f \n", numberOfPenniesToReturn);
-
+        String returnStatement = "";
+        returnStatement = String.format("Quarters: %.0f \nDimes: %.0f \nNickels: %.0f \nPennies: %.0f", numberOfQuartersToReturn, numberOfDimesToReturn, numberOfNickelsToReturn, numberOfPenniesToReturn);
+        return returnStatement;
     } // returnChange method
 } // class

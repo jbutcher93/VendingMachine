@@ -15,9 +15,8 @@ public class Program {
 
         ui.setCurrentMenuState(UI.menu_state.MAIN_MENU);
 
-        try {
             while (ui.getCurrentMenuState() != UI.menu_state.EXIT) {
-
+                try {
                 if (ui.getCurrentMenuState() == UI.menu_state.MAIN_MENU) {
                     nextMenu = ui.displayMainMenu();
                     if (nextMenu == 1) {
@@ -64,10 +63,12 @@ public class Program {
                     ui.setCurrentMenuState(ui.finishTransactionMenu(vm));
                 } // end of FINISH_TRANSACTION_MENU
 
-            } // end of while loop
-        } catch (Exception e) {
-            System.out.println("We caught an exception");
-        }
+                } catch (NumberFormatException nfe) {
+                    System.out.println("You'll need to enter a number.");
+                } catch (Exception e) {
+                    System.out.println("We caught an exception.");
+                }
+                } // end of while loop
         System.out.println("End of program");
         
     } // main

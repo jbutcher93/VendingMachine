@@ -65,11 +65,6 @@ public class UI {
             return Integer.parseInt(nextMenu);
     }
         public void feedMoneyMenu (VendingMachine vendingMachine) {
-        /*
-         * Allows user to enter whole dollar amount
-         * Updates vendingMachineBalance
-         * Adds to log
-         * writer.close()*/
             System.out.println("===================================");
             System.out.println("          FEED MONEY MENU");
             System.out.println("===================================");
@@ -77,14 +72,6 @@ public class UI {
             vendingMachine.addToBalance((scanner.nextLine()));
     }
         public String selectProductMenu (VendingMachine vendingMachine) {
-            /*
-             * Item name and location
-             * of each item in ArrayList using
-             * foreach loop w/ item.getName()
-             * and item.getLocation()
-             * Probably add soundOutput()
-             * Adds to log
-             * writer.close()*/
             System.out.println("===================================");
             System.out.println("      PRODUCT SELECTION MENU");
             System.out.println("===================================");
@@ -96,11 +83,6 @@ public class UI {
             return code;
         }
         public menu_state finishTransactionMenu (VendingMachine vendingMachine) {
-        /*
-         * Returns change in smallest amount of coins
-         * Resets vending machine balance to 0
-         * Adds to log
-         * writer.close()*/
             vendingMachine.resetBalance();
             return menu_state.MAIN_MENU;
     }

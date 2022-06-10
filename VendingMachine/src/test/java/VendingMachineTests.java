@@ -1,12 +1,10 @@
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VendingMachineTests extends VendingMachine{
+public class VendingMachineTests{
 
     VendingMachine vendingMachine = new VendingMachine();
 
@@ -69,6 +67,15 @@ public class VendingMachineTests extends VendingMachine{
     }
 
     @Test
+    public void updateInventoryTest_null_code_returns_enter_code_and_PURCHASE_MENU() {
+        updateInventoryTestList.add(new Items("Queso Chips", "A2", "Chips", new BigDecimal(1.50)));
+        String code = null;
+        vendingMachine.setVendingMachineItems(updateInventoryTestList);
+        updateInventoryMenuStateTest = vendingMachine.updateInventory(code);
+        Assert.assertEquals(UI.menu_state.PURCHASE_MENU, updateInventoryMenuStateTest);
+    }
+
+    @Test
     public void updateInventoryTest_quantity_sufficient_and_location_correct_returns_item_and_PURCHASE_MENU() {
         vendingMachine.setBalance(new BigDecimal(100));
         updateInventoryTestList.add(new Items("Queso Chips", "A2", "Chips", new BigDecimal(1.50)));
@@ -80,8 +87,22 @@ public class VendingMachineTests extends VendingMachine{
     }
 
     /*
-    * writeSalesReport() tests
-    * 
-    * */
+    * returnChange() tests
+    * Returning no money
+    * Returning one of each
+    */
 
+    @Test
+    public void returnChangeTests_zero_balance_returns_zero_coins() {
+        String expected = "Quarters: 0 \nDimes: 0 \nNickels: 0 \nPennies: 0";
+        String actual = vendingMachine.returnChange(new BigDecimal(.00));
+        Assert.assertTrue(expected.equals(actual));
+    }
+
+    @Test
+    public void returnChangeTests_odd_balance_returns_all_coins() {
+        String expected = "Quarters: 4 \nDimes: 1 \nNickels: 1 \nPennies: 1";
+        String actual = vendingMachine.returnChange(new BigDecimal("1.16"));
+        Assert.assertEquals(expected, actual);
+    }
 }
