@@ -38,6 +38,10 @@ public class VendingMachine {
         return balance;
     }
 
+    public void setBalance(BigDecimal setBalance) {
+        this.balance = setBalance;
+    }
+
     public void addToBalance(String addedValue) {
         this.addedValue = new BigDecimal(addedValue);
         this.balance = (balance.add(new BigDecimal(addedValue)));
@@ -93,27 +97,25 @@ public class VendingMachine {
         }
     }
 
-    public UI.menu_state updateInventory() {
-        System.out.print("Enter product code: ");
-        String code = scanner.nextLine();
-        for (Items location : getVendingMachineItems()) {
-            if (code.equalsIgnoreCase(location.getLocation())) {
-                if(getBalance().subtract(location.getPrice()).compareTo(ZERO) < 0) {
+    public UI.menu_state updateInventory(String code) {
+        for (Items item : getVendingMachineItems()) {
+            if (code.equalsIgnoreCase(item.getLocation())) {
+                if(getBalance().subtract(item.getPrice()).compareTo(ZERO) < 0) {
                     System.out.println();
                     System.out.println("Add money before attempting to purchase");
                     return UI.menu_state.PURCHASE_MENU;
                 }
-                else if(location.getQuantity() == 0) {
+                else if(item.getQuantity() == 0) {
                     System.out.println();
                     System.out.println("This product is sold out");
                     return UI.menu_state.PURCHASE_MENU;
                 } else {
-                    location.setQuantity(location.getQuantity() - 1);
-                    removeFromBalance(location.getPrice());
-                    addToLog(UI.menu_state.SELECT_PRODUCT_MENU, location);
+                    item.setQuantity(item.getQuantity() - 1);
+                    removeFromBalance(item.getPrice());
+                    addToLog(UI.menu_state.SELECT_PRODUCT_MENU, item);
                     System.out.println();
-                    System.out.println("Here's your: " + location.getName());
-                    location.soundOutput();
+                    System.out.println("Here's your: " + item.getName());
+                    item.soundOutput();
                     return UI.menu_state.PURCHASE_MENU;
                 }
             }

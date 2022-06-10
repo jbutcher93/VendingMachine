@@ -56,8 +56,8 @@ public class Program {
                 } // end of FEED_MONEY_MENU
 
                 else if (ui.getCurrentMenuState() == UI.menu_state.SELECT_PRODUCT_MENU) {
-                    ui.selectProductMenu(vm);
-                    ui.setCurrentMenuState(vm.updateInventory());
+                    String code = ui.selectProductMenu(vm);
+                    ui.setCurrentMenuState(vm.updateInventory(code));
                 } // end of SELECT_PRODUCT_MENU
 
                 else if (ui.getCurrentMenuState() == UI.menu_state.FINISH_TRANSACTION_MENU) {

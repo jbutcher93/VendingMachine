@@ -76,7 +76,7 @@ public class UI {
             System.out.print("How much money would you like to feed? ");
             vendingMachine.addToBalance((scanner.nextLine()));
     }
-        public void selectProductMenu (VendingMachine vendingMachine) {
+        public String selectProductMenu (VendingMachine vendingMachine) {
             /*
              * Item name and location
              * of each item in ArrayList using
@@ -91,6 +91,9 @@ public class UI {
             for (Items category : vendingMachine.getVendingMachineItems()) {
                 System.out.println("Product: " + category.getName() + ", Code: " + category.getLocation());
             }
+            System.out.print("Enter product code: ");
+            String code = scanner.nextLine();
+            return code;
         }
         public menu_state finishTransactionMenu (VendingMachine vendingMachine) {
         /*
