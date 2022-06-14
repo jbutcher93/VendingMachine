@@ -42,9 +42,14 @@ public class VendingMachine {
     }
 
     public void addToBalance(String addedValue) {
-        this.addedValue = new BigDecimal(addedValue);
-        this.balance = (balance.add(new BigDecimal(addedValue)));
-        addToLog(UI.menu_state.FEED_MONEY_MENU);
+        if(Integer.parseInt(addedValue) < 0) {
+            System.out.println("Thievery is frowned upon.");
+        }
+        else {
+            this.addedValue = new BigDecimal(addedValue);
+            this.balance = (balance.add(new BigDecimal(addedValue)));
+            addToLog(UI.menu_state.FEED_MONEY_MENU);
+        }
     }
 
     public void removeFromBalance(BigDecimal balance) {
