@@ -95,6 +95,22 @@ public class VendingMachine {
         }
     }
 
+    public List<Items> stockVendingMachine() {
+        List<Items> stockVM = new ArrayList<>();
+        String line;
+        File file = new File("vendingmachine.csv");
+        try (Scanner scanner = new Scanner(file)) {
+            while(scanner.hasNextLine()) {
+                line = scanner.nextLine();
+                String[] item = line.split("\\|");
+                stockVM.add(new Items(item[1], item[0], item[3], (new BigDecimal(item[2]))));
+            }
+        } catch (FileNotFoundException fnf) {
+            System.out.println("File not found.");
+        }
+        return stockVM;
+    }
+
     public UI.menu_state updateInventory(String code) {
         try {
             for (Items item : getVendingMachineItems()) {

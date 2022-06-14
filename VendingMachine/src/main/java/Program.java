@@ -1,16 +1,9 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 public class Program {
     public static void main(String[] args) {
 
         int nextMenu;
         VendingMachine vm = new VendingMachine();
-        vm.setVendingMachineItems(stockVendingMachine());
+        vm.setVendingMachineItems(vm.stockVendingMachine());
         UI ui = new UI();
 
         ui.setCurrentMenuState(UI.menu_state.MAIN_MENU);
@@ -72,21 +65,5 @@ public class Program {
         System.out.println("End of program");
         
     } // main
-
-    public static List<Items> stockVendingMachine() {
-        List<Items> stockVM = new ArrayList<>();
-        String line;
-        File file = new File("testItems.txt");
-        try (Scanner scanner = new Scanner(file)) {
-            while(scanner.hasNextLine()) {
-                line = scanner.nextLine();
-                String[] item = line.split("\\|");
-                stockVM.add(new Items(item[1], item[0], item[3], (new BigDecimal(item[2]))));
-            }
-        } catch (FileNotFoundException fnf) {
-            System.out.println("File not found.");
-        }
-        return stockVM;
-    }
 
 } // class
