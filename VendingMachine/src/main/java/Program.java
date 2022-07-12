@@ -53,7 +53,8 @@ public class Program {
                 } // end of SELECT_PRODUCT_MENU
 
                 else if (ui.getCurrentMenuState() == UI.menu_state.FINISH_TRANSACTION_MENU) {
-                    ui.setCurrentMenuState(ui.finishTransactionMenu(vm));
+                    vm.resetBalance();
+                    ui.setCurrentMenuState(UI.menu_state.MAIN_MENU);
                 } // end of FINISH_TRANSACTION_MENU
 
                 } catch (NumberFormatException nfe) {

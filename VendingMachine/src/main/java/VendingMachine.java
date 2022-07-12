@@ -11,6 +11,7 @@ import java.util.Scanner;
 import static java.math.BigDecimal.ZERO;
 
 public class VendingMachine {
+    // variable declarations
     private final int MAX_STOCK = 5;
     private BigDecimal totalSales = ZERO;
     private List<Items> vendingMachineItems = new ArrayList<>();
@@ -25,8 +26,11 @@ public class VendingMachine {
     private Scanner scanner = new Scanner(System.in);
     private File file = new File("log.txt");
 
+
+    // constructor
     public VendingMachine() {}
 
+    // getters and setters
     public List<Items> getVendingMachineItems() {
         return vendingMachineItems;
     }
@@ -41,6 +45,7 @@ public class VendingMachine {
         this.balance = setBalance;
     }
 
+    // methods
     public void addToBalance(String addedValue) {
         if(Integer.parseInt(addedValue) < 0) {
             System.out.println("Thievery is frowned upon.");
@@ -60,44 +65,6 @@ public class VendingMachine {
         addToLog(UI.menu_state.FINISH_TRANSACTION_MENU);
         System.out.println(returnChange(balance));
         this.balance = ZERO;
-    }
-
-    /*
-    * Handles FEED_MONEY and FINISH_TRANSACTION log additions
-    */
-    public void addToLog(UI.menu_state currentMenuState) {
-        try {
-            String statusLogAction = "";
-            FileOutputStream fos = new FileOutputStream(file, true);
-            PrintWriter writer = new PrintWriter(fos);
-
-            if(currentMenuState == UI.menu_state.FINISH_TRANSACTION_MENU) {
-                statusLogAction = "GIVE CHANGE";
-                writer.println(formatDateTime + " " + statusLogAction + " " + getBalance() + " 0");
-
-            }
-            else if(currentMenuState == UI.menu_state.FEED_MONEY_MENU) {
-                statusLogAction = "FEED MONEY";
-                writer.println(formatDateTime + " " + statusLogAction + " " + addedValue + " " + getBalance());
-            }
-            writer.close();
-        } catch (FileNotFoundException fnf) {
-            System.out.println("File does not exist");
-        }
-    }
-
-    /*
-    * Specific for item purchases in SELECT_PRODUCT_MENU
-    */
-    public void addToLog(UI.menu_state currentMenuState, Items item) {
-        try {
-            FileOutputStream fos = new FileOutputStream(file, true);
-            PrintWriter writer = new PrintWriter(fos);
-            writer.println(formatDateTime + " "  + item.getName() + " " + item.getLocation() + " " + item.getPrice() + " " + getBalance());
-            writer.close();
-        } catch (FileNotFoundException fnf) {
-            System.out.println("File does not exist");
-        }
     }
 
     public List<Items> stockVendingMachine() {
@@ -147,6 +114,86 @@ public class VendingMachine {
         }
     }
 
+    public String returnChange(BigDecimal bd) {
+        BigDecimal returnBalance = bd;
+
+        final BigDecimal quarter = BigDecimal.valueOf(.25);
+        final BigDecimal dime = BigDecimal.valueOf(.10);
+        final BigDecimal nickel = BigDecimal.valueOf(.05);
+        final BigDecimal penny = BigDecimal.valueOf(.01);
+
+        BigDecimal[] dimeReturn;
+        BigDecimal numberOfDimesToReturn = ZERO;
+        BigDecimal[] nickelReturn;
+        BigDecimal numberOfNickelsToReturn = ZERO;
+        BigDecimal[] pennyReturn;
+        BigDecimal numberOfPenniesToReturn = ZERO;
+
+        //Find Quarters to return.
+        BigDecimal[] quarterReturn = returnBalance.divideAndRemainder(quarter);
+        BigDecimal numberOfQuartersToReturn = quarterReturn[0];
+        returnBalance = (quarterReturn[1]);
+
+        // Find Dimes to return.
+        if (returnBalance.compareTo(dime) >= 0) {
+            dimeReturn = returnBalance.divideAndRemainder(dime);
+            numberOfDimesToReturn = dimeReturn[0];
+            returnBalance = (dimeReturn[1]);
+        }
+        // Find Nickels to return.
+        if (returnBalance.compareTo(nickel) >= 0) {
+            nickelReturn = returnBalance.divideAndRemainder(nickel);
+            numberOfNickelsToReturn = nickelReturn[0];
+            returnBalance = (nickelReturn[1]);
+        }
+        // Find pennies to return.
+        if (returnBalance.compareTo(penny) >= 0) {
+            pennyReturn = returnBalance.divideAndRemainder(penny);
+            numberOfPenniesToReturn = pennyReturn[0];
+        }
+        String returnStatement = "";
+        returnStatement = String.format("Quarters: %.0f \nDimes: %.0f \nNickels: %.0f \nPennies: %.0f", numberOfQuartersToReturn, numberOfDimesToReturn, numberOfNickelsToReturn, numberOfPenniesToReturn);
+        return returnStatement;
+    }
+
+    /*
+    * Handles FEED_MONEY and FINISH_TRANSACTION log additions
+    */
+    public void addToLog(UI.menu_state currentMenuState) {
+        try {
+            String statusLogAction = "";
+            FileOutputStream fos = new FileOutputStream(file, true);
+            PrintWriter writer = new PrintWriter(fos);
+
+            if(currentMenuState == UI.menu_state.FINISH_TRANSACTION_MENU) {
+                statusLogAction = "GIVE CHANGE";
+                writer.println(formatDateTime + " " + statusLogAction + " " + getBalance() + " 0");
+
+            }
+            else if(currentMenuState == UI.menu_state.FEED_MONEY_MENU) {
+                statusLogAction = "FEED MONEY";
+                writer.println(formatDateTime + " " + statusLogAction + " " + addedValue + " " + getBalance());
+            }
+            writer.close();
+        } catch (FileNotFoundException fnf) {
+            System.out.println("File does not exist");
+        }
+    }
+
+    /*
+    * Specific for item purchases in SELECT_PRODUCT_MENU
+    */
+    public void addToLog(UI.menu_state currentMenuState, Items item) {
+        try {
+            FileOutputStream fos = new FileOutputStream(file, true);
+            PrintWriter writer = new PrintWriter(fos);
+            writer.println(formatDateTime + " "  + item.getName() + " " + item.getLocation() + " " + item.getPrice() + " " + getBalance());
+            writer.close();
+        } catch (FileNotFoundException fnf) {
+            System.out.println("File does not exist");
+        }
+    }
+
     public void writeSalesReport() {
         String path = "SalesReport";
         int quantitySold;
@@ -170,47 +217,4 @@ public class VendingMachine {
         }
     }
 
-    public String returnChange(BigDecimal bd) {
-        BigDecimal returnBalance = bd;
-
-        final BigDecimal quarter = BigDecimal.valueOf(.25);
-        final BigDecimal dime = BigDecimal.valueOf(.10);
-        final BigDecimal nickel = BigDecimal.valueOf(.05);
-        final BigDecimal penny = BigDecimal.valueOf(.01);
-
-        BigDecimal[] dimeReturn = new BigDecimal[0];
-        BigDecimal numberOfDimesToReturn = ZERO;
-        BigDecimal[] nickelReturn = new BigDecimal[0];
-        BigDecimal numberOfNickelsToReturn = ZERO;
-        BigDecimal[] pennyReturn = new BigDecimal[0];
-        BigDecimal numberOfPenniesToReturn = ZERO;
-
-        //Find Quarters to return.
-        BigDecimal[] quarterReturn = returnBalance.divideAndRemainder(quarter);
-        BigDecimal numberOfQuartersToReturn = quarterReturn[0];
-        returnBalance = (quarterReturn[1]);
-
-        // Find Dimes to return.
-        if (returnBalance.compareTo(dime) >= 0) {
-        dimeReturn = returnBalance.divideAndRemainder(dime);
-        numberOfDimesToReturn = dimeReturn[0];
-        returnBalance = (dimeReturn[1]);
-    }
-
-        // Find Nickels to return.
-        if (returnBalance.compareTo(nickel) >= 0) {
-        nickelReturn = returnBalance.divideAndRemainder(nickel);
-        numberOfNickelsToReturn = nickelReturn[0];
-        returnBalance = (nickelReturn[1]);
-    }
-
-        // Find pennies to return.
-        if (returnBalance.compareTo(penny) >= 0) {
-        pennyReturn = returnBalance.divideAndRemainder(penny);
-        numberOfPenniesToReturn = pennyReturn[0];
-    }
-        String returnStatement = "";
-        returnStatement = String.format("Quarters: %.0f \nDimes: %.0f \nNickels: %.0f \nPennies: %.0f", numberOfQuartersToReturn, numberOfDimesToReturn, numberOfNickelsToReturn, numberOfPenniesToReturn);
-        return returnStatement;
-    } // returnChange method
 } // class

@@ -37,7 +37,7 @@ public class VendingMachineTests{
     UI.menu_state updateInventoryMenuStateTest;
 
     @Test
-    public void updateInventoryTest_correct_item_locationand_quantity_provided_returns_PURCHASE_MENU_and_updates_balance_and_quantity() {
+    public void updateInventoryTest_correct_item_location_and_quantity_provided_returns_PURCHASE_MENU_and_updates_balance_and_quantity() {
         updateInventoryTestList.add(new Items("Queso Chips", "A2", "Chips", new BigDecimal(1.50)));
         String code = "A2";
         vendingMachine.setVendingMachineItems(updateInventoryTestList);

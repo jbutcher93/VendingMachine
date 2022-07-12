@@ -82,8 +82,5 @@ public class UI {
             String code = scanner.nextLine();
             return code;
         }
-        public menu_state finishTransactionMenu (VendingMachine vendingMachine) {
-            vendingMachine.resetBalance();
-            return menu_state.MAIN_MENU;
-    }
+
 } // class
